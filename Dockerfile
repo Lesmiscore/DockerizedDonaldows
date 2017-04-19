@@ -6,7 +6,7 @@ RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y python-software-properties debconf-utils software-properties-common && \
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
-    DEBIAN_FRONTEND=noninteractive echo yes | apt-get install -y wine p7zip-full ssh && \
+    apt-get install -y wine p7zip-full ssh xauth && \
     rm -rf /var/lib/apt/lists && \
     mkdir /var/run/sshd
 
@@ -30,13 +30,15 @@ RUN set -xe && \
     sed -i 's/Port 22/Port 3304/' /etc/ssh/sshd_config && \
     sed -i 's/#PasswordAuthentication/PasswordAuthentication/' /etc/ssh/sshd_config && \
     sed -i 's/PrintLastLog yes/PrintLastLog no/' /etc/ssh/sshd_config && \
-    echo 'if [ -v "\$DISPLAY" ] ; then' >> /home/donaldows/.bashrc && \
+    echo 'echo $DISPLAY' >> /home/donaldows/.bashrc && \
+    echo 'if [ -v DISPLAY ] ; then' >> /home/donaldows/.bashrc && \
     echo 'wine /home/donaldows/donaldows/donaldows.exe' >> /home/donaldows/.bashrc && \
     echo 'else' >> /home/donaldows/.bashrc && \
     echo 'echo アラーッ!' >> /home/donaldows/.bashrc && \
     echo 'fi' >> /home/donaldows/.bashrc && \
     echo 'exit' >> /home/donaldows/.bashrc && \
-    touch /home/donaldows/.hushlogin
+    touch /home/donaldows/.hushlogin && \
+    touch /home/donaldows/.Xauthority
 
 ADD ${DONALDOWS_ARCHIVE} /home/donaldows/donaldows
 
